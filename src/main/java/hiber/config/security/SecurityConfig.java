@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -19,6 +20,10 @@ import hiber.config.handler.SuccessUserHandler;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(
+        prePostEnabled = true,
+        securedEnabled = true,
+        jsr250Enabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsService; // сервис, с помощью которого тащим пользователя
@@ -27,19 +32,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public SecurityConfig(@Qualifier("userDetailsServiceImpl") UserDetailsService userDetailsService, SuccessUserHandler successUserHandler) {
         this.userDetailsService = userDetailsService;
         this.successUserHandler = successUserHandler;
-
-//        this.userDetailsService = new InMemoryUserDetailsManager(
-//                User.builder()
-//                        .password("admin")
-//                        .username("admin")
-//                        .roles("ADMIN")
-//                        .build(),
-//                User.builder()
-//                        .password("user")
-//                        .username("user")
-//                        .roles("USER")
-//                        .build()
-//        );
     }
 
     @Autowired
@@ -63,11 +55,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll();
 
         http
-//                .formLogin()
-//                .loginPage("/login")
-//                .usernameParameter("email")
-//                .permitAll()
-//                .and()
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/login").permitAll() // доступность всем

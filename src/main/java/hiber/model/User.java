@@ -19,7 +19,7 @@ public class User implements UserDetails {
     private Long id;
 
     @Column(name = "firstname")
-    private String username;
+    private String firstName;
 
     @Column(name = "email")
     private String email;
@@ -28,7 +28,7 @@ public class User implements UserDetails {
     private String password;
 
     @Column(name = "lastname")
-    private String lastname;
+    private String lastName;
 
     @Column(name = "age")
     private Integer age;
@@ -37,28 +37,37 @@ public class User implements UserDetails {
     @JoinTable(name = "users_roles",
             joinColumns = {@JoinColumn(name = "user_id")},
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    @JsonManagedReference
+    // @JsonManagedReference
     private Set<Role> roles = new HashSet<>();
 
     public User() {
 
     }
 
-    public User(String username, String email, String password) {
-        this.username = username;
-        this.email = email;
+    public User(String firstName, String username, String password) {
+        this.firstName = firstName;
+        this.email = username;
         this.password = password;
     }
-    public User(Long id, String username, String email, String password) {
-        this.id = id;
-        this.username = username;
-        this.email = email;
+
+    public User(String firstName, String lastName, Integer age, String username, String password) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.age = age;
+        this.email = username;
         this.password = password;
     }
-    public User(Long id, String username, String email, String password, Set<Role> roles) {
+
+    public User(Long id, String firstName, String username, String password) {
         this.id = id;
-        this.username = username;
-        this.email = email;
+        this.firstName = firstName;
+        this.email = username;
+        this.password = password;
+    }
+    public User(Long id, String firstName, String username, String password, Set<Role> roles) {
+        this.id = id;
+        this.firstName = firstName;
+        this.email = username;
         this.password = password;
         this.roles = roles;
     }
@@ -74,28 +83,20 @@ public class User implements UserDetails {
         this.id = id;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getFirstName() {
-        return username;
+        return firstName;
     }
 
-    public void setFirstName(String username) {
-        this.username = username;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     public String getLastName() {
-        return lastname;
+        return lastName;
     }
 
-    public void setLastName(String lastname) {
-        this.lastname = lastname;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public Integer getAge() {
@@ -121,9 +122,8 @@ public class User implements UserDetails {
         return password;
     }
 
-    public void setUsername(String email) { this.email = email; }
+    public void setUsername(String Username) { this.email = Username; }
 
-    @Override
     public String getUsername() {
         return email;
     }
@@ -159,6 +159,6 @@ public class User implements UserDetails {
             for ( Role r : roles) {
                 rolesString += r.getRole() + " ";
             }
-        return id + " " + username + " " + lastname + " " + age + " " + password + " " + email + " " + rolesString;
+        return id + " " + firstName + " " + lastName + " " + age + " " + password + " " + email + " " + rolesString;
     }
 }

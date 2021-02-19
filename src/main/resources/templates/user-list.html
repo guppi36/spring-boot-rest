@@ -49,9 +49,10 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-    <script type="text/javascript" src="/webjars/jquery/2.2.3/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/jquery/3.3.1/jquery.min.js"></script>
     <script type="text/javascript" src="/webjars/bootstrap/4.3.1/js/bootstrap.js"></script>
-    <script type="text/javascript" th:src="@{/js/main.js}" src="../static/js/main.js"></script>
+
+    <script th:src="@{/js/formsScripts.js}"></script>
 
 </head>
 <body>
@@ -65,8 +66,19 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <div class="text-white">
-                    <b th:text="${userData.getEmail()}"></b> with roles: <span th:text="${userData.getAllRoles()}"></span>
+                <div class="myHeader">
+                    <div class="text-white">
+                    <b type="text" id="headerEmail"></b> with roles: <span type="text" id="headerAllRoles"></span>
+                    <script>
+                        $.ajax("/loginUser", {
+                            dataType: "json",
+                            success: function (msg) {
+                                $("#headerEmail").text(msg.username);
+                                $("#headerAllRoles").text(msg.allRoles);
+                            }
+                        })
+                    </script>
+                    </div>
                 </div>
             </li>
         </ul>
@@ -119,21 +131,7 @@
                                             <th>Delete</th>
                                         </tr>
                                         </thead>
-                                        <tbody>
-                                        <tr th:each="user, state : ${users}">
-                                            <th scope="row" th:text="${user.getId()}"></th>
-                                            <td th:text="${user.getFirstName()}"></td>
-                                            <td th:text="${user.getLastName()}"></td>
-                                            <td th:text="${user.getAge()}"></td>
-                                            <td th:text="${user.getEmail()}"></td>
-                                            <td th:text="${user.getAllRoles()}"></td>
-                                            <td>
-                                                <a th:href="@{findOne/(id=${user.getId()})}" class="btn btn-info eBtn">Edit</a>
-                                            </td>
-                                            <td>
-                                                <a th:href="@{findOne/(id=${user.getId()})}" class="btn btn-danger eBtn2">Delete</a>
-                                            </td>
-                                        </tr>
+                                        <tbody id="usersTable">
                                         </tbody>
                                     </table>
                                 </div>
@@ -152,7 +150,7 @@
                                         <div class="row">
                                             <div class="col-md-4"></div>
                                             <div class="col-md-4"  align="center">
-                                                <form th:action="@{add}" method="post">
+                                                <form class="addForm" id="addForm">
                                                     <p></p>
                                                     <div class="form-group">
                                                         <label for="formGroupExampleInput" class="font-weight-bold">First name</label>
@@ -182,7 +180,7 @@
                                                         </select>
                                                     </div>
                                                     <p></p>
-                                                    <p><button type="submit" class="btn btn-success">Add new user</button></p>
+                                                    <p><button type="button" class="btn btn-success" id="addButton">Add new user</button></p>
                                                 </form>
                                             </div>
                                             <div class="col-md-4"></div>
@@ -196,7 +194,7 @@
 </div>
 
     <div class="myForm">
-        <form th:action="@{update}" method="post">
+        <form>
         <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -248,16 +246,17 @@
                         </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <input type="submit" class="btn btn-primary" value="Edit"/>
+                        <button type="button" class="btn btn-primary" id="editBtn" data-dismiss="modal">Edit</button>
                     </div>
                 </div>
             </div>
+        </div>
         </div>
         </form>
     </div>
 
     <div class="myForm2">
-        <form th:action="@{delete}" method="post">
+        <form>
             <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -305,14 +304,14 @@
                             </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <input type="submit" class="btn btn-danger" value="Delete"/>
+                            <button type="button" class="btn btn-danger" id="deleteBtn" data-dismiss="modal">Delete</button>
                         </div>
                     </div>
                 </div>
             </div>
+            </div>
         </form>
     </div>
-
 
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->

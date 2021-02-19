@@ -42,7 +42,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-    <script type="text/javascript" src="/webjars/jquery/2.2.3/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/jquery/3.3.1/jquery.min.js"></script>
     <script type="text/javascript" src="/webjars/bootstrap/4.3.1/js/bootstrap.js"></script>
     <script type="text/javascript" th:src="@{/js/main.js}" src="../static/js/main.js"></script>
 </head>
@@ -57,8 +57,19 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <div class="text-white">
-                    <b th:text="${userData.getEmail()}"></b> with roles: <span th:text="${userData.getAllRoles()}"></span>
+                <div class="myHeader">
+                    <div class="text-white">
+                        <b type="text" id="headerEmail"></b> with roles: <span type="text" id="headerAllRoles"></span>
+                        <script>
+                            $.ajax("/loginUser", {
+                                dataType: "json",
+                                success: function (msg) {
+                                    $("#headerEmail").text(msg.username);
+                                    $("#headerAllRoles").text(msg.allRoles);
+                                }
+                            })
+                        </script>
+                    </div>
                 </div>
             </li>
         </ul>
@@ -99,15 +110,23 @@
                                     <th>Role</th>
                                 </tr>
                                 </thead>
-                                <tbody>
-                                <tr th:each="user, state : ${users}">
-                                    <th scope="row" th:text="${user.getId()}"></th>
-                                    <td th:text="${user.getFirstName()}"></td>
-                                    <td th:text="${user.getLastName()}"></td>
-                                    <td th:text="${user.getAge()}"></td>
-                                    <td th:text="${user.getEmail()}"></td>
-                                    <td th:text="${user.getAllRoles()}"></td>
-                                </tr>
+                                <tbody id="usersTable">
+                                    <script>
+                                        $.ajax("/loginUser" , {
+                                            dataType: "json",
+                                            success: function (msg) {
+                                                let users = msg;
+                                                let table = $("<tr></tr>");
+                                                $("<td></td>").text(users.id).appendTo(table);
+                                                $("<td></td>").text(users.firstName).appendTo(table);
+                                                $("<td></td>").text(users.lastName).appendTo(table);
+                                                $("<td></td>").text(users.age).appendTo(table);
+                                                $("<td></td>").text(users.username).appendTo(table);
+                                                $("<td></td>").text(users.allRoles).appendTo(table);
+                                                table.appendTo($("#usersTable"));
+                                            }
+                                        });
+                                    </script>
                                 </tbody>
                             </table>
                         </div>
