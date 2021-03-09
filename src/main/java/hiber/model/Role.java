@@ -22,7 +22,9 @@ public class Role implements GrantedAuthority {
     @JsonBackReference
     Set<User> users;
 
-    public Role() { }
+    public Role() {
+
+    }
 
     public Role(String name)
     {

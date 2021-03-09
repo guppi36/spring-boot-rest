@@ -113,6 +113,11 @@ public class User implements UserDetails {
         return sb.toString();
     }
 
+    public String getAllNormalRoles(){
+        StringBuilder sb = new StringBuilder();
+        roles.forEach(r -> sb.append(r.getRole()).append(" "));
+        return sb.toString();
+    }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles;

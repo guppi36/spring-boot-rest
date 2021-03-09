@@ -7,17 +7,16 @@ $(document).ready(function () {
                 firstName: document.getElementById("formGroupExampleInput").value,
                 lastName: document.getElementById("formGroupExampleInput2").value,
                 age: document.getElementById("formGroupExampleInput3").value,
-                email: document.getElementById("formGroupExampleInput4").value,
+                username: document.getElementById("formGroupExampleInput4").value,
                 password: document.getElementById("formGroupExampleInput5").value,
+                roles: [ document.getElementById("exampleFormControlSelect2").value ]
             }
 
             $.ajax("/users", {
                 method: "post",
-                data: {
-                    user: JSON.stringify(user),
-                    role: document.getElementById("exampleFormControlSelect2").value,
-                },
+                data: JSON.stringify(user),
                 dataType: "json",
+                contentType: "application/json",
                 success: function () {
                     alert("CREATED");
                     const myNode = document.getElementById("usersTable");
@@ -101,23 +100,24 @@ $(document).ready(function () {
     const buttonEdit = $("#editBtn");
     buttonEdit.click(
         function () {
+            let role = document.getElementById("updateGroupInputSelect2").value;
+            if(role == null || role == "") role = "none";
+
             let user = {
                 id: document.getElementById("updateGroupInputID").value,
                 firstName: document.getElementById("updateGroupInput").value,
                 lastName: document.getElementById("updateGroupInput2").value,
                 age: document.getElementById("updateGroupInput3").value,
-                email: document.getElementById("updateGroupInput4").value,
+                username: document.getElementById("updateGroupInput4").value,
                 password: document.getElementById("updateGroupInput5").value,
+                roles: [ role ],
             }
 
             $.ajax("/users", {
                 method: "put",
-                data:
-                    {
-                        user: JSON.stringify(user),
-                        role: document.getElementById("updateGroupInputSelect2").value
-                    },
+                data: JSON.stringify(user),
                 dataType: "json",
+                contentType: "application/json",
                 success: function () {
                     const myNode = document.getElementById("usersTable");
                     while (myNode.firstChild) {
