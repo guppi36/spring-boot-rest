@@ -36,80 +36,13 @@ public class AdminController {
     	return userService.getUserByEmail(email);
 	}
 
-    @GetMapping(value = "/")
+    @GetMapping
 	public String printStart(ModelMap model) {
 		List<User> userList = userService.listUsers();
-
-
 		User userData = getUserByDetails();
 
 		model.addAttribute("userData", userData);
 		model.addAttribute("users", userList);
 		return "user-list";
-	}
-
-   	@PostMapping(value = "/add")
-	public String addUser2(@RequestParam String username,
-						   @RequestParam String lastName,
-						   @RequestParam Integer age,
-						   @RequestParam String email,
-						   @RequestParam String password,
-						   @RequestParam String role, ModelMap model) {
-		User newUser = new User(username, email, password);
-		newUser.setLastName(lastName);
-		newUser.setAge(age);
-
-		Set<Role> roles = new HashSet<>();
-		roles.add(Role.getUserRole());
-		if(role.equals("ADMIN")) roles.add(Role.getAdminRole());
-
-		newUser.setRoles(roles);
-		System.out.println(newUser + " // " + role);
-		userService.add(newUser);
-
-		List<User> userList = userService.listUsers();
-		model.addAttribute("userData", getUserByDetails());
-		model.addAttribute("users", userList);
-		return "user-list";
-	}
-
-	@PostMapping(value = "/update")
-	public String updateUser(@ModelAttribute(value="user") User user,
-							 @RequestParam(defaultValue = "none") String role,ModelMap model) {
-		Set<Role> roles = new HashSet<>();
-		if(role.equals("none")) {
-			User oldUser = userService.getUserById(user.getId().intValue());
-			roles = oldUser.getRoles();
-		} else {
-			roles.add(Role.getUserRole());
-			if (role.equals("ADMIN")) roles.add(Role.getAdminRole());
-		}
-		user.setRoles(roles);
-		System.out.println(user);
-		userService.update(user);
-
-		List<User> userList = userService.listUsers();
-
-		model.addAttribute("userData", getUserByDetails());
-		model.addAttribute("users", userList);
-		return "user-list";
-	}
-
-	@PostMapping(value = "/delete")
-	public String deleteUser(@ModelAttribute(value="user") User user, ModelMap model) {
-        System.out.println(user);
-		userService.delete(user);
-		List<User> userList = userService.listUsers();
-
-		model.addAttribute("userData", getUserByDetails());
-		model.addAttribute("users", userList);
-		return "user-list";
-	}
-
-	@GetMapping("/findOne")
-	@ResponseBody
-	public User findOne(Integer id){
-    	User user = userService.getUserById(id);
-    	return user;
 	}
 }

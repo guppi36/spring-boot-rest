@@ -37,9 +37,7 @@ public class RestAdminController {
         String email = principal instanceof UserDetails ? ((UserDetails)principal).getUsername() : principal.toString();
 
         final User user = userService.getUserByEmail(email);
-        ResponseEntity<User> resp = user != null ? ResponseEntity.ok(user) : ResponseEntity.notFound().build();
-
-        return resp;
+        return  user != null ? ResponseEntity.ok(user) : ResponseEntity.notFound().build();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -53,52 +51,34 @@ public class RestAdminController {
         newUser.setRoles(roles);
 
         userService.add(newUser);
-        ResponseEntity<User> resp = ResponseEntity.status(HttpStatus.CREATED).body(userService.getUserByEmail(newUser.getUsername()));
-        return resp;
+        return  ResponseEntity.status(HttpStatus.CREATED).body(userService.getUserByEmail(newUser.getUsername()));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping(value = "/users")
     public ResponseEntity<List<User>> read() {
         final List<User> clients = userService.listUsers();
-        ResponseEntity<List<User>> resp = (clients != null &&  !clients.isEmpty()) ? ResponseEntity.ok(clients) : ResponseEntity.notFound().build();
-
-        return resp;
+        return (clients != null &&  !clients.isEmpty()) ? ResponseEntity.ok(clients) : ResponseEntity.notFound().build();
     }
 
     @GetMapping(value = "/users/{id}")
     public ResponseEntity<User> read(@PathVariable(name = "id") int id) {
         final User client = userService.getUserById(id);
-        ResponseEntity<User> resp = (client != null) ? ResponseEntity.ok(client) : ResponseEntity.notFound().build();
-
-        return resp;
+        return (client != null) ? ResponseEntity.ok(client) : ResponseEntity.notFound().build();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping(value = "/users")
     public ResponseEntity<?> update(@RequestBody User user) {
-        User newUser = user;
-        String role = user.getAllNormalRoles();
-        Set<Role> roles = new HashSet<>();
-        if(role.equals("none ")) {
-            User oldUser = userService.getUserById(newUser.getId().intValue());
-            roles = oldUser.getRoles();
-        } else {
-            roles.add(Role.getUserRole());
-            if (role.equals("ADMIN ")) roles.add(Role.getAdminRole());
-        }
-        newUser.setRoles(roles);
-        userService.update(newUser);
+        userService.update(user);
 
-        ResponseEntity<User> resp = ResponseEntity.status(HttpStatus.CREATED).body(userService.getUserByEmail(newUser.getUsername()));
-        return resp;
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.getUserByEmail(user.getUsername()));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping(value = "/users/{id}")
     public ResponseEntity<?> delete(@PathVariable(name = "id") int id) {
         userService.deleteById(id);
-        ResponseEntity<Integer> resp = ResponseEntity.ok(id);
-        return resp;
+        return ResponseEntity.ok(id);
     }
 }

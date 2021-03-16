@@ -1,11 +1,14 @@
 package hiber.service;
 
+import hiber.model.Role;
 import hiber.model.User;
 import hiber.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class UserServiceImp implements UserService {
@@ -37,8 +40,20 @@ public class UserServiceImp implements UserService {
 
    @Override
    public void update(User user) {
-      userRepository.deleteById(user.getId());
-      userRepository.save(user);
+      User newUser = user;
+      String role = user.getAllNormalRoles();
+      Set<Role> roles = new HashSet<>();
+      if(role.equals("none ")) {
+         User oldUser = getUserById(newUser.getId().intValue());
+         roles = oldUser.getRoles();
+      } else {
+         roles.add(Role.getUserRole());
+         if (role.equals("ADMIN ")) roles.add(Role.getAdminRole());
+      }
+      newUser.setRoles(roles);
+
+      userRepository.deleteById(newUser.getId());
+      userRepository.save(newUser);
    }
 
    @Override
