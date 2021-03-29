@@ -71,7 +71,6 @@ public class RestAdminController {
     @PutMapping(value = "/users")
     public ResponseEntity<?> update(@RequestBody User user) {
         userService.update(user);
-
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.getUserByEmail(user.getUsername()));
     }
 
