@@ -5,6 +5,7 @@ import hiber.model.User;
 import hiber.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
@@ -44,14 +45,12 @@ public class UserServiceImp implements UserService {
       String role = user.getAllNormalRoles();
       Set<Role> roles = new HashSet<>();
       if(role.equals("none ")) {
-         User oldUser = getUserById(newUser.getId().intValue());
-         roles = oldUser.getRoles();
+         roles = userRepository.findByID(newUser.getId()).getRoles();
       } else {
          roles.add(Role.getUserRole());
          if (role.equals("ADMIN ")) roles.add(Role.getAdminRole());
       }
       newUser.setRoles(roles);
-
       userRepository.deleteById(newUser.getId());
       userRepository.save(newUser);
    }
